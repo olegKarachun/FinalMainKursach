@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ApplicationDbContextConnection"
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "DefaultConnection"
+    },
+    "storage1": {
+      "type": "storage",
+      "connectionId": "DefaultEndpointsProtocol=https;AccountName=olegkarachunn;AccountKey=P3ZTc12NIG0rkgSlgqIvmD02jReKL+nyrSO4wgUlux4cUrYk7vURLYC80tbqcQ1xMTMoYVF+008o4WN/arQJ7Q==;EndpointSuffix=core.windows.net"
+    }
+  }
+}

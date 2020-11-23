@@ -1,0 +1,50 @@
+﻿#comments {
+    overflow: auto;
+}
+
+.comment {
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 5px solid silver;
+    border-radius: 20px;
+}
+
+.rating-area {
+    overflow: hidden;
+    margin: 0 auto;
+    display: inline-block !important;
+}
+
+.rating-area:not(:checked) > input {
+    display: none;
+}
+
+.rating-area:not(:checked) > label {    
+    width: 42px;
+    float: right;    
+    padding: 0;
+    cursor: pointer;
+    font-size: 32px;
+    line-height: 32px;
+    color: lightgrey;
+    text-shadow: 1px 1px #bbb;
+}
+
+.rating-area:not(:checked) > label:after {
+    content: '★';
+}
+
+.rating-area > input:checked ~ label {    
+    color: gold;
+    
+}
+
+.rating-area:not(:checked) > label:hover,
+.rating-area:not(:checked) > label:hover ~ label {
+    color: gold;
+}
+
+
+
+
+

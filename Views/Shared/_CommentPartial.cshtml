@@ -1,0 +1,7 @@
+﻿@foreach (var comment in ViewBag.Comments)
+{
+    <div class="comments">
+        <h6>@comment.UserEmail</h6>
+        <p>@comment.CommentContent</p>
+    </div>
+}

@@ -1,0 +1,31 @@
+﻿@await Html.PartialAsync("/Views/_ViewImports.cshtml")
+
+<h4 class="text-center">@Localizer["PersonalPage"] @ViewBag.User.Email</h4>
+
+@if (@ViewBag.User.UserInfo != null)
+{
+    <p>@ViewBag.User.UserInfo</p>
+}
+else
+{<p>@Localizer["NullInfo"]</p>}
+
+
+@foreach (var story in ViewBag.Stories)
+{
+    <div id="story">
+        <h4><a asp-route-Id="@story.Id" asp-controller="Story" asp-action="StoryPage">@story.Title</a></h4>
+        <p>@story.Descript</p>
+        <p>@Localizer[@story.Genre]</p>
+        <p>@story.Tags</p>
+        <p>@Localizer["Rate"] @story.Rate</p>
+    </div>
+}
+
+<style>
+    #story {
+        border: 2px solid black;
+        border-radius: 15px;
+        margin-bottom: 10px;
+        padding: 7px;
+    }
+</style>

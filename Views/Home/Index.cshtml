@@ -1,0 +1,43 @@
+﻿@await Html.PartialAsync("/Views/_ViewImports.cshtml")
+
+
+<a class="btn btn-primary" asp-action="GetBestStories" asp-controller="Filter">@Localizer["BtnBest"]</a>
+<a class="btn btn-primary" asp-action="GetNewStories" asp-controller="Filter">@Localizer["BtnNew"]</a>
+
+
+<div>
+    <form>
+        <div class="form-group">
+            @for (var i = Genre.Fantastic; i <= Genre.Romance; i++)
+            {
+                <input type="checkbox" name=@i>@Localizer[i.ToString()]<br>
+            }
+        </div>
+        <div class="form-group">
+            <label>@Localizer["Tags"]</label>
+            <input name="Tags" class="form-control" />
+            <span class="text-danger"></span>
+        </div>
+        <button class="btn btn-primary" type="submit" asp-action="FilterMainPage" asp-controller="Filter">@Localizer["Filter"]</button>
+    </form>
+</div>
+
+@foreach (var story in ViewBag.Stories)
+{
+    <div id="@story.Id" class="story card">
+        <div class="card-body">
+            <h4 class="card-title"><a asp-route-Id="@story.Id" asp-controller="Story" asp-action="StoryPage">@story.Title</a></h4>
+            <p class="card-text">@story.Descript</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <p class="list-group-item">@Localizer[@story.Genre]</p>
+            <p class="list-group-item">@story.Tags</p>
+            <p class="list-group-item">@Localizer["Rate"]: @story.Rate</p>
+        </ul>
+    </div>
+}
+
+@await Html.PartialAsync("/Views/_ScriptsPartial.cshtml")
+<script src="~/js/pages/Index.js"></script>
+
+

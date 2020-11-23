@@ -1,0 +1,51 @@
+﻿@await Html.PartialAsync("/Views/_ViewImports.cshtml")
+
+
+<div class="btn-group">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        @Localizer["btnDropDown"]
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <button class="dropdown-item" form="check" asp-controller="Account" asp-action="Block">@Localizer["Block"]</button>
+        <button class="dropdown-item" form="check" asp-controller="Account" asp-action="Unblock">@Localizer["Unblock"]</button>
+        <button class="dropdown-item" form="check" asp-controller="Account" asp-action="MakeAdmin">@Localizer["mAdmin"]</button>
+        <button class="dropdown-item" form="check" asp-controller="Account" asp-action="RemoveAdmin">@Localizer["rmAdmin"]</button>
+        <button class="dropdown-item" form="check" asp-controller="Account" asp-action="Delete">@Localizer["Delete"]</button>
+    </div>
+</div>
+
+<form id="check" method="post">
+    <table class="table">
+        <tr>
+            <th scope="col"><label><input class="check" name="checkall" type="checkbox" onclick="checkedAll(check)">@Localizer["CheckAll"]</label></th>
+            <th scope="col">@Localizer["Email"]</th>
+            <th scope="col">@Localizer["Access"]</th>
+            <th scope="col">@Localizer["Status"]</th>
+        </tr>
+
+        @foreach (var item in ViewBag.Users)
+        {
+            <tr>
+                <td><input id="checkbox" class="check" name="check[@item.Email]" type="checkbox"></td>
+                <td><a asp-route-Id="@item.Email" asp-action="PersonalPage" asp-controller="Home">@item.Email</a></td>
+                @if (item.IsAdmin == true)
+                {
+                    <td>@Localizer["Admin"]</td>
+                }
+                else
+                {
+                    <td>@Localizer["User"]</td>
+                }
+                @if (item.IsBlocked == true)
+                {
+                    <td>@Localizer["Blocked"]</td>
+                }
+                else
+                {
+                    <td>@Localizer["Active"]</td>
+                }
+            </tr>
+        }
+    </table>
+</form>
+<script src="~/js/pages/AdminPages.js"></script>

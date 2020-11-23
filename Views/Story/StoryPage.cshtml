@@ -1,0 +1,174 @@
+﻿@await Html.PartialAsync("/Views/_ViewImports.cshtml")
+@model List<Chapter>
+
+<h3 class="text-center">@ViewBag.Story.Title</h3>
+<p>@Localizer["Author"]: <a asp-route-Id="@ViewBag.Author" asp-controller="Home" asp-action="UserPage">@ViewBag.Author</a></p>
+<p>@Localizer["Desc"]: @ViewBag.Story.Descript</p>
+<p>@Localizer["Genre"]: @Localizer[@ViewBag.Story.Genre]</p>
+<p>@Localizer["Tags"]: @ViewBag.Story.Tags</p>
+
+
+@for (int i = 1; i <= Model.Count; i++)
+{
+    <div class="card" style="width: 70%;">
+        <img class="card-img-top chapter-image" id="@Model[i-1].ImageName">
+        <div class="card-body">
+            <h5 class="card-title">@Localizer["Chapter"] @i: @Model[i - 1].Title </h5>
+            <p class="content card-text" id="@i">@Model[i - 1].Content</p>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <p><button name="@Model[i-1].Id" class="btn btn-primary active like">@Localizer["Like"]</button></p>
+            }
+            <p id="likes" class="content card-text">@Localizer["Likes"]: @Model[i - 1].Rate</p>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("Active"))
+{<div class="text-center">
+     <div class="rating-area">
+         <input class="star" type="radio" id="star-5" name="rating" value="5">
+         <label for="star-5"></label>
+         <input class="star" type="radio" id="star-4" name="rating" value="4">
+         <label for="star-4"></label>
+         <input class="star" type="radio" id="star-3" name="rating" value="3">
+         <label for="star-3"></label>
+         <input class="star" type="radio" id="star-2" name="rating" value="2">
+         <label for="star-2"></label>
+         <input class="star" type="radio" id="star-1" name="rating" value="1">
+         <label for="star-1"></label>
+     </div>
+ </div>    
+}
+
+
+<div id="comment-area">
+    <h5>@Localizer["Comments"]</h5>
+    <div id="comments">
+        @foreach (var comment in ViewBag.Comments)
+        {
+            <div class="card" style="margin-bottom:10px">
+                <div class="card-header">
+                    @comment.AuthorEmail
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">@comment.CommentContent</li>
+                </ul>
+            </div>
+        }
+    </div>
+    @if (User.IsInRole("Active"))
+    {
+        <div id="new-comment">
+            <form>
+                <input id="new" class="form-control" name="comment" type="text" />
+                <a id="submit" class="btn btn-lg btn-outline-success">@Localizer["Send"]</a>
+            </form>
+        </div>
+    }
+</div>
+
+@await Html.PartialAsync("/Views/_ScriptsPartial.cshtml")
+<script>
+    $(".content").each(function () {
+        this.innerHTML = markdown.toHTML(this.innerHTML);
+    })
+
+    $(".chapter-image").each(function () {
+        if (this.id.length > 0) {
+            getImage(this.id, this);
+        }
+    })
+
+    function getImage(imageName, image) {
+            $.get("/Chapter/GetImage", { "filename": imageName }, function (data) {
+                let ssil = "data:image/png;base64," + data;
+                image.src = ssil;
+            });
+    }
+
+    const hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/update")
+        .build();
+
+    hubConnection.on("updatecomments", function (comment, email) {
+        createComment(comment, email);
+        if ($(".card-header").length > 10) {
+            document.getElementById("comments").style.height = "400px";
+            document.getElementById("comments").style.overflow = "auto";
+        }
+    });
+
+    function createComment(content, email) {
+        let div = document.createElement('div');
+        createCardFromDiv(div);
+        let title = document.createElement("div");
+        createTitleFromDiv(title, email);
+        let divComment = document.createElement("ul");
+        createCommentDiv(divComment);
+        let comment = document.createElement("li");
+        createCommentContent(comment, content);
+        createCommentBlock(div, title, divComment, comment);
+    }
+
+    function createCardFromDiv(div) {
+        div.classList.add("card");
+    }
+
+    function createTitleFromDiv(title, email) {
+        title.classList.add("card-header");
+        title.innerHTML = email;
+    }
+
+    function createCommentDiv(divComment) {
+        divComment.classList.add("list-group");
+        divComment.classList.add("list-group-flush");
+    }
+
+    function createCommentContent(comment, content) {
+        comment.classList.add("list-group-item");
+        comment.innerHTML = content
+    }
+
+    function createCommentBlock(div, title, divComment, comment) {
+        div.appendChild(title);
+        div.appendChild(divComment);
+        divComment.appendChild(comment);
+        div.style.marginBottom = "10px"
+        document.getElementById("comments").appendChild(div);
+    }
+
+    hubConnection.start();
+
+    let timer = setInterval(() => {
+        if (hubConnection.state == "Connected") {
+            hubConnection.invoke('AddToStory', "@ViewBag.Story.Id");
+            clearInterval(timer)
+        }
+    }, 100);
+
+    if ($(".card-header").length > 10) {
+        document.getElementById("comments").style.height = "400px";
+        document.getElementById("comments").style.overflow = "auto";
+    }
+
+    $("#submit").click(function () {
+        let content = document.getElementById("new").value;
+        hubConnection.invoke("Send",content, "@ViewBag.Story.Id", "@User.Identity.Name" );
+        $.post("/Comment/SendComment", { "content": content, "storyId": "@ViewBag.Story.Id" });
+    })
+
+    $(".star").each(function () {
+        $(this).click(function () {
+            $.post("/Story/SetRate", { "value": this.value, "storyId":@ViewBag.Story.Id});
+        })
+    })
+
+    $(".like").each(function () {
+        $(this).click(function () {
+            $.post("/Chapter/SetLike", { "chapterId": this.name });            
+        })
+    })
+</script>
+
+

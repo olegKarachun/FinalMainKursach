@@ -1,0 +1,87 @@
+﻿@await Html.PartialAsync("/Views/_ViewImports.cshtml")
+
+<form id="form" method="post" enctype="multipart/form-data">
+    <h4>@Localizer["Title"]</h4>
+    <hr />
+    <div class="text-danger"></div>
+    <div class="form-group">
+        <label>@Localizer["Label"]</label>
+        <input id="titleInput" oninput="titlePrew()" name="Title" class="form-control" value="@ViewBag.Chapter.Title" />
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <textarea oninput="this.editor.update()" id="inputContent" name="Content" class="form-control">@ViewBag.Chapter.Content</textarea>
+        <span class="text-danger"></span>
+    </div>
+    <div id="drop-area">
+        <p>@Localizer["LoadImage"]</p>
+        <p></p>
+    </div>
+    <a id="submit" class="btn btn-primary">@Localizer["Save"]</a>
+</form>
+
+<h4>@Localizer["Preview"]</h4>
+<div class="card" style="width: 70%;">
+    <img class="card-img-top chapter-image" id="img">
+    <div class="card-body">
+        <h5 class="card-title" id="card-title">@ViewBag.Chapter.Title</h5>
+        <p class="content card-text" id="preview"></p>
+    </div>
+</div>
+
+<style>
+    #drop-area {
+        border: 2px dashed #ccc;
+        border-radius: 20px;
+        width: 480px;
+        font-family: sans-serif;
+        margin: 100px auto;
+        padding: 20px;
+    }
+
+        #drop-area.highlight {
+            border-color: purple;
+        }
+</style>
+
+@await Html.PartialAsync("/Views/_ScriptsPartial.cshtml")
+<script src="~/js/DragDrop.js"></script>
+<script>
+    if ("@ViewBag.Chapter.ImageName".length > 0) {
+        getImage("@ViewBag.Chapter.ImageName");
+    };
+
+function getImage(imageName) {
+    $.get("/Chapter/GetImage", { "filename": imageName }, function (data) {
+        let image = document.getElementById("img");
+        let ssil = "data:image/png;base64," + data;
+        image.src = ssil;
+    });
+    }     
+
+$("#submit").click(function () {
+    let formData = new FormData();
+    var data = $("#form").serializeArray();
+    createData(formData, data);
+    alert("Изменена глава: " + data[0].value);
+})
+
+function createData(formData, data) {
+    for (let i = 0; i < data.length; i++) {
+        formData.append(data[i].name, data[i].value)
+    }
+    formData.append("image", image);
+    formData.append("chapterId", "@ViewBag.Chapter.Id");
+    send(formData);
+}
+
+function send(formData) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/Chapter/EditChapter');
+    xhr.send(formData);
+    }
+
+    function titlePrew() {
+        document.getElementById("card-title").innerHTML = document.getElementById("titleInput").value;
+    }
+</script>

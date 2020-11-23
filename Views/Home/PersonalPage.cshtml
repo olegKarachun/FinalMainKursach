@@ -1,0 +1,88 @@
+﻿@await Html.PartialAsync("/Views/_ViewImports.cshtml")
+
+
+    <h4 class="text-center">@Localizer["Cab"] @ViewBag.User.Email</h4>
+
+    @if (@ViewBag.User.UserInfo != null)
+    {
+        <div>
+            <span class="editable">@ViewBag.User.UserInfo</span>
+        </div>
+    }
+    else
+    {
+        <div>
+            <span class="editable">@Localizer["InputInfo"]</span>
+        </div>
+    }
+
+
+    <div class="btn-group">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            @Localizer["Sort"]
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" asp-route-Id="@ViewBag.User.Id" asp-controller="Sort" asp-action="GetMostRate">@Localizer["Best"]</a>
+            <a class="dropdown-item" asp-route-Id="@ViewBag.User.Id" asp-controller="Sort" asp-action="GetLowRate">@Localizer["Bad"]</a>
+            <a class="dropdown-item" asp-route-Id="@ViewBag.User.Id" asp-controller="Sort" asp-action="GetNewStory">@Localizer["New"]</a>
+            <a class="dropdown-item" asp-route-Id="@ViewBag.User.Id" asp-controller="Sort" asp-action="GetOldStory">@Localizer["Old"]</a>
+            <a class="dropdown-item" asp-route-Id="@ViewBag.User.Id" asp-controller="Sort" asp-action="GetMostLike">@Localizer["mLikes"]</a>
+            <a class="dropdown-item" asp-route-Id="@ViewBag.User.Id" asp-controller="Sort" asp-action="GetLowLike">@Localizer["lLikes"]</a>
+        </div>
+    </div>
+
+    <div>
+        <form>
+            @for (var i = Genre.Fantastic; i <= Genre.Romance; i++)
+            {
+                <input type="checkbox" name=@i>@Localizer[i.ToString()]<br>
+            }
+            <div class="form-group">
+                <label>@Localizer["Tags"]</label>
+                <input name="Tags" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+            <button class="btn btn-primary" type="submit" asp-route-Id="@ViewBag.User.Id" asp-action="FilterPersonalPage" asp-controller="Filter">@Localizer["Filter"]</button>
+        </form>
+    </div>
+
+    <a style="margin-top:10px" class="btn btn-primary" asp-route-Id="@ViewBag.User.Email" asp-action="CreateStory" asp-controller="Story">@Localizer["Create"]</a>
+
+    <table class="table">
+        <tr>
+            <th scope="col">@Localizer["Title"]</th>
+            <th scope="col">@Localizer["Delete"]</th>
+            <th scope="col">@Localizer["Edit"]</th>
+        </tr>
+
+        @foreach (var item in ViewBag.Stories)
+        {
+            <tr>
+                <td><a asp-route-Id="@item.Id" asp-action="StoryPage" asp-controller="Story">@item.Title</a></td>
+                <td><a class="btn btn-danger" asp-route-Id="@item.Id" asp-action="DeleteStory" asp-controller="Story">@Localizer["Delete"]</a></td>
+                <td><a class="btn btn-primary" asp-route-Id="@item.Id" asp-action="EditStory" asp-controller="Story">@Localizer["Edit"]</a></td>
+            </tr>
+        }
+    </table>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/eip.js"></script>
+    <script src="~/dist/tagify.min.js"></script>
+    <script src="~/js/pages/PersonalPage.js"></script>
+    <script>
+        const print = (ev) => {
+            $.post("/Home/ChangeUserInfo", { "newValue": ev.newValue, "email": "@ViewBag.User.Email" });
+           }
+        $('.editable').editable({ onChange: print });
+
+        var tags;
+        $.get("/Home/GetUserTags", { "userId": "@ViewBag.User.Id" }, function (data) {
+            let data = new Set(data);
+            tagify.settings.whitelist.splice(0, data.length, ...data);
+            tagify.loading(false).dropdown.show.call(tagify, data);
+        })
+    </script>
+
+
+

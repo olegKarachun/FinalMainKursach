@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "signalr1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.SignalRService/SignalR/Taskservice",
+      "type": "signalr.azure",
+      "connectionId": "Azure__SignalR__ConnectionString",
+      "secretStore": "AzureAppSettings"
+    },
+    "storage1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/olegkarachunn",
+      "type": "storage.azure",
+      "connectionId": "DefaultEndpointsProtocol=https;AccountName=olegkarachunn;AccountKey=P3ZTc12NIG0rkgSlgqIvmD02jReKL+nyrSO4wgUlux4cUrYk7vURLYC80tbqcQ1xMTMoYVF+008o4WN/arQJ7Q==;EndpointSuffix=core.windows.net",
+      "secretStore": "AzureAppSettings"
+    },
+    "mssql2": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/task4dbserver2020/databases/WebApplication11_db",
+      "type": "mssql.azure",
+      "connectionId": "DefaultConnection",
+      "secretStore": "AzureAppSettings"
+    },
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/task4dbserver2020/databases/WebApplication1111_db",
+      "type": "mssql.azure",
+      "connectionId": "ApplicationDbContextConnection",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}

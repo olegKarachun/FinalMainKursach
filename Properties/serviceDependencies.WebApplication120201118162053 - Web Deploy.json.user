@@ -1,0 +1,54 @@
+{
+  "dependencies": {
+    "storage1": {
+      "restored": true,
+      "restoreTime": "2020-11-18T13:24:54.1229452Z"
+    },
+    "signalr1": {
+      "restored": true,
+      "restoreTime": "2020-11-18T13:22:29.7768337Z"
+    },
+    "mssql2": {
+      "restored": true,
+      "restoreTime": "2020-11-18T13:23:08.1483794Z"
+    },
+    "mssql1": {
+      "restored": true,
+      "restoreTime": "2020-11-18T13:23:42.7722595Z"
+    }
+  },
+  "parameters": {
+    "mssql2.subscriptionId": {
+      "Type": "subscription",
+      "Value": "ba87be1a-0f04-404a-8d12-cf92974770e5"
+    },
+    "storage1.resourceGroupName": {
+      "Type": "resourceGroup",
+      "Value": "Task420201008213502ResourceGroup"
+    },
+    "signalr1.resourceGroupName": {
+      "Type": "resourceGroup",
+      "Value": "Task420201008213502ResourceGroup"
+    },
+    "storage1.subscriptionId": {
+      "Type": "subscription",
+      "Value": "ba87be1a-0f04-404a-8d12-cf92974770e5"
+    },
+    "mssql2.resourceGroupName": {
+      "Type": "resourceGroup",
+      "Value": "Task420201008213502ResourceGroup"
+    },
+    "mssql1.subscriptionId": {
+      "Type": "subscription",
+      "Value": "ba87be1a-0f04-404a-8d12-cf92974770e5"
+    },
+    "mssql1.resourceGroupName": {
+      "Type": "resourceGroup",
+      "Value": "Task420201008213502ResourceGroup"
+    },
+    "signalr1.subscriptionId": {
+      "Type": "subscription",
+      "Value": "ba87be1a-0f04-404a-8d12-cf92974770e5"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+﻿@await Html.PartialAsync("/Views/_ViewImports.cshtml")
+@model NewStoryModel
+
+<h4>@Localizer["Title"] @ViewBag.User</h4>
+
+<form id="form" method="post">
+    <h4>@Localizer["Title2"]</h4>
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Title">@Localizer["Label"]</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Descript">@Localizer["Desc"]</label>
+        <input asp-for="Descript" class="form-control" />
+        <span asp-validation-for="Descript" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <select asp-for="Genre">
+            @for (var i = Genre.Fantastic; i <= Genre.Romance; i++)
+            {
+                <option value="@i">@Localizer[i.ToString()]</option>
+            }
+        </select>
+    </div>
+    <div id="tags" class="form-group">
+        <label asp-for="Tags">@Localizer["Tags"]</label>
+        <input id="inputtag" maxlength="30" asp-for="Tags" class="form-control" />
+        <span asp-validation-for="Tags" class="text-danger"></span>
+    </div>
+    <button asp-route-Id="@ViewBag.User" id="but" type="submit" class="btn btn-success">@Localizer["Next"]</button>
+</form>
+
+@await Html.PartialAsync("/Views/_ScriptsPartial.cshtml")
+<script src="~/js/pages/CreateStory.js"></script>

@@ -1,0 +1,82 @@
+﻿@await Html.PartialAsync("/Views/_ViewImports.cshtml")
+@model List<Chapter>
+
+<form id="form" method="post">
+    <h4>@Localizer["Title"]</h4>
+    <hr />
+    <div class="text-danger"></div>
+    <div class="form-group">
+        <label>@Localizer["Label"]</label>
+        <input name="Title" class="form-control" value="@ViewBag.Story.Title" />
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>@Localizer["Desc"]</label>
+        <input name="Descript" class="form-control" value="@ViewBag.Story.Descript" />
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <select name="Genre">
+            @for (var i = Genre.Fantastic; i <= Genre.Romance; i++)
+            {
+                <option value="@i" class="genre">
+                    @Localizer[i.ToString()]
+                </option>
+            }
+        </select>
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>@Localizer["Tags"]</label>
+        <input name="Tags" class="form-control" value="@ViewBag.Story.Tags" />
+        <span class="text-danger"></span>
+    </div>
+    <a id="submit" class="btn btn-primary">@Localizer["Save"]</a>
+</form>
+
+<div class="chapter__list">
+    @for (int i = 1; i <= Model.Count; i++)
+    {
+        <p><h4>@Localizer["Chapter"] @i</h4></p>
+        <a class="btn btn-outline-primary btn-sm" asp-route-Id="@Model[i - 1].Id" asp-action="GoEditChapter" asp-controller="Chapter">@Localizer["Change"] @Model[i - 1].Title</a>
+        <a class="btn btn-outline-danger btn-sm" asp-route-Id="@Model[i - 1].Id" asp-route-returnUrl="@Context.Request.Path" asp-action="DeleteChapter" asp-controller="Chapter">@Localizer["Delete"] @Model[i - 1].Title</a>
+    }
+</div>
+<a style="margin-top:10px" asp-route-Id="@ViewBag.Story.Id" asp-controller="Chapter" asp-action="CreateChapter" class="btn btn-primary">@Localizer["AddChapter"]</a>
+
+@await Html.PartialAsync("/Views/_ScriptsPartial.cshtml")
+<script>
+    $(".genre").each(function () {
+        str = this.getAttribute("value");
+        if (str == "@ViewBag.Story.Genre") {
+            this.setAttribute("selected", "selected");            
+        }
+    })
+    let tags;
+    $.get("/Home/GetTags", function (data) {
+        let tags = new Set(data);
+        tagify.settings.whitelist.splice(0, tags.length, ...tags);
+        tagify.loading(false).dropdown.show.call(tagify, tags);
+    });    
+
+    let input = document.querySelector('input[name="Tags"]'),
+        tagify = new Tagify(input, {
+            whitelist: [],
+            maxTags: 10,
+            dropdown: {
+                maxItems: 20,
+                classname: "tags-look",
+                enabled: 0,
+                closeOnSelect: false
+            }
+        })
+
+    $("#submit").click(function () {
+        let data = $("#form").serializeArray();
+        data.push({ name: "Story", value: "@ViewBag.Story.Id" });
+        let change = confirm("Подтвердить изменения?");
+        if (change) {            
+            $.post("/Story/SaveChanges", data);
+        }
+    })
+</script>
